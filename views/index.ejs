@@ -60,6 +60,8 @@
   <script type="module" src="scripts/modules/radar.mjs"></script>
   <script type="module" src="scripts/modules/regionalforecast.mjs"></script>
   <script type="module" src="scripts/modules/travelforecast.mjs"></script>
+  <script type="module" src="scripts/modules/advertisement.mjs"></script>
+  <script type="module" src="scripts/modules/station-id.mjs"></script>
   <script type="module" src="scripts/modules/progress.mjs"></script>
   <script type="module" src="scripts/modules/radar.mjs"></script>
   <script type="module" src="scripts/modules/settings.mjs"></script>
@@ -108,6 +110,9 @@
         <div id="travel-html" class="weather-display">
           <%- include('partials/travel.ejs') %>
         </div>
+        <div id="advertisement-html" class="weather-display">
+          <%- include('partials/advertisement.ejs') %>
+        </div>
         <div id="current-weather-html" class="weather-display">
           <%- include('partials/current-weather.ejs') %>
         </div>
@@ -131,6 +136,9 @@
         </div>
         <div id="radar-html" class="weather-display">
           <%- include('partials/radar.ejs') %>
+        </div>
+        <div id="station-id-html" class="weather-display">
+          <%- include('partials/station-id.ejs') %>
         </div>
         <div id="hazards-html" class="weather-display">
           <%- include('partials/hazards.ejs') %>

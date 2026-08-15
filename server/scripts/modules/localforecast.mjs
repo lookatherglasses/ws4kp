@@ -284,4 +284,4 @@ const parse = (forecast, forecastUrl) => {
 	}));
 };
 // register display
-registerDisplay(new LocalForecast(7, 'local-forecast'));
+registerDisplay(new LocalForecast(8, 'local-forecast'));

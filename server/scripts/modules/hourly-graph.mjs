@@ -259,4 +259,4 @@ const formatTime = (time, prev) => {
 };
 
 // register display
-registerDisplay(new HourlyGraph(4, 'hourly-graph'));
+registerDisplay(new HourlyGraph(4, 'hourly-graph', false));

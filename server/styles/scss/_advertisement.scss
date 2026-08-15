@@ -1,0 +1,23 @@
+#advertisement-html.weather-display,
+#station-id-html.weather-display {
+	background: #000;
+	width: 640px;
+	height: 480px;
+	overflow: hidden;
+}
+
+.weather-display .advertisement,
+.weather-display .station-id {
+	width: 640px;
+	height: 480px;
+	margin: 0;
+	padding: 0;
+}
+
+.weather-display .advertisement-image,
+.weather-display .station-id-image {
+	display: block;
+	width: 640px;
+	height: 480px;
+	object-fit: contain;
+}

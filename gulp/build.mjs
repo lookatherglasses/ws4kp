@@ -56,6 +56,8 @@ const webpackOptions = {
 				'./server/scripts/modules/radar.mjs',
 				'./server/scripts/modules/regionalforecast.mjs',
 				'./server/scripts/modules/travelforecast.mjs',
+				'./server/scripts/modules/advertisement.mjs',
+				'./server/scripts/modules/station-id.mjs',
 			],
 			dependOn: 'shared',
 		},
@@ -121,6 +123,8 @@ const mjsSources = [
 	'server/scripts/modules/radar.mjs',
 	'server/scripts/modules/regionalforecast.mjs',
 	'server/scripts/modules/travelforecast.mjs',
+	'server/scripts/modules/advertisement.mjs',
+	'server/scripts/modules/station-id.mjs',
 	'server/scripts/modules/progress.mjs',
 	'server/scripts/modules/media.mjs',
 	'server/scripts/modules/custom-scroll-text.mjs',
@@ -134,6 +138,7 @@ const buildJs = () => src(mjsSources)
 const cssSources = [
 	'server/styles/scss/**/*.scss',
 ];
+
 const buildCss = () => src(cssSources, { sourcemaps: true })
 	.pipe(sass({ style: 'compressed' }).on('error', sass.logError))
 	.pipe(rename({ suffix: '.min' }))
@@ -152,6 +157,7 @@ const getVersion = async () => {
 
 const compressHtml = async () => {
 	const version = await getVersion();
+
 	return src(htmlSources)
 		.pipe(ejs({
 			production: version,
@@ -170,7 +176,11 @@ const otherFiles = [
 	'server/manifest.json',
 	'server/music/**/*.mp3',
 ];
-const copyOtherFiles = () => src(otherFiles, { base: 'server/', encoding: false })
+
+const copyOtherFiles = () => src(otherFiles, {
+	base: 'server/',
+	encoding: false,
+})
 	.pipe(dest('./dist'));
 
 // Copy JSON data files for static hosting
@@ -186,20 +196,40 @@ const imageSources = [
 	'!server/images/gimp/**',
 ];
 
-const copyImageSources = () => src(imageSources, { base: './server', encoding: false })
+const copyImageSources = () => src(imageSources, {
+	base: './server',
+	encoding: false,
+})
 	.pipe(dest('./dist'));
 
 const buildPlaylist = async () => {
 	const availableFiles = await reader();
 	const playlist = { availableFiles };
-	return file('playlist.json', JSON.stringify(playlist)).pipe(dest('./dist'));
+
+	return file(
+		'playlist.json',
+		JSON.stringify(playlist),
+	).pipe(dest('./dist'));
 };
 
 const logVersion = async () => {
 	log(`Built version: ${await getVersion()}`);
 };
 
-const buildDist = series(clean, parallel(buildJs, compressJsVendor, buildCss, compressHtml, copyOtherFiles, copyDataFiles, copyImageSources, buildPlaylist), logVersion);
+const buildDist = series(
+	clean,
+	parallel(
+		buildJs,
+		compressJsVendor,
+		buildCss,
+		compressHtml,
+		copyOtherFiles,
+		copyDataFiles,
+		copyImageSources,
+		buildPlaylist,
+	),
+	logVersion,
+);
 
 export default buildDist;
 
