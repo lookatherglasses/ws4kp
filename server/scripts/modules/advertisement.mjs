@@ -6,8 +6,8 @@ import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 
 const AD_IMAGES = [
-	'images/ads/ad-01.png?v=20260816',
-	'images/ads/ad-02.png?v=20260816',
+	'images/ads/ad-01.png?v=20260816-2',
+	'images/ads/ad-02.png?v=20260816-2',
 ];
 
 class Advertisement extends WeatherDisplay {
