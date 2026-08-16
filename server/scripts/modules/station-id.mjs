@@ -11,6 +11,9 @@ class StationId extends WeatherDisplay {
 	constructor(navId, elemId) {
 		super(navId, elemId, 'Station ID', true);
 
+		this.okToDrawCurrentConditions = false;
+		this.okToDrawCurrentDateTime = false;
+
 		this.timing.totalScreens = 1;
 		preloadImg(STATION_ID_IMAGE);
 	}

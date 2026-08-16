@@ -14,6 +14,9 @@ class Advertisement extends WeatherDisplay {
 	constructor(navId, elemId) {
 		super(navId, elemId, 'Advertisement', true);
 
+		this.okToDrawCurrentConditions = false;
+		this.okToDrawCurrentDateTime = false;
+
 		this.currentAdIndex = -1;
 		this.timing.totalScreens = 1;
 
