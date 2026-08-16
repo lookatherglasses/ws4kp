@@ -20,6 +20,8 @@ class StationId extends WeatherDisplay {
 		const superResponse = super.getData(weatherParameters, refresh);
 
 		this.data = STATION_ID_IMAGE;
+		const image = this.elem.querySelector('.station-id-image');
+		if (image) image.src = this.data;
 		this.getDataCallback();
 
 		if (!superResponse) return;
@@ -30,13 +32,6 @@ class StationId extends WeatherDisplay {
 
 	async drawCanvas() {
 		super.drawCanvas();
-
-		const image = this.elem.querySelector('.station-id-image');
-
-		if (image) {
-			image.src = this.data;
-		}
-
 		this.finishDraw();
 	}
 }

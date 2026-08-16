@@ -14,7 +14,7 @@ class Advertisement extends WeatherDisplay {
 	constructor(navId, elemId) {
 		super(navId, elemId, 'Advertisement', true);
 
-		this.currentAdIndex = -1;
+		this.currentAdIndex = 0;
 		this.timing.totalScreens = 1;
 		this.timing.baseDelay = 12000;
 
@@ -36,8 +36,20 @@ class Advertisement extends WeatherDisplay {
 	}
 
 	async screenIndexChange() {
-		this.currentAdIndex = (this.currentAdIndex + 1) % this.data.length;
 		await this.drawCanvas();
+	}
+
+	hideCanvas() {
+		const wasActive = this.active;
+		super.hideCanvas();
+
+		// Prepare the next ad while this display is hidden so the previous image
+		// cannot flash briefly the next time the Advertisement screen appears.
+		if (wasActive && this.data?.length > 0) {
+			this.currentAdIndex = (this.currentAdIndex + 1) % this.data.length;
+			const image = this.elem.querySelector('.advertisement-image');
+			if (image) image.src = this.data[this.currentAdIndex];
+		}
 	}
 
 	async drawCanvas() {
