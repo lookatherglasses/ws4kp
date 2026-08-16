@@ -16,6 +16,7 @@ class Advertisement extends WeatherDisplay {
 
 		this.currentAdIndex = -1;
 		this.timing.totalScreens = 1;
+		this.timing.baseDelay = 12000;
 
 		AD_IMAGES.forEach((imagePath) => {
 			preloadImg(imagePath);
@@ -52,8 +53,8 @@ class Advertisement extends WeatherDisplay {
 	}
 }
 
-// Position 6: immediately after Travel
-const display = new Advertisement(6, 'advertisement');
+// Position 7: immediately after Regional Forecast
+const display = new Advertisement(7, 'advertisement');
 registerDisplay(display);
 
 export default display;
