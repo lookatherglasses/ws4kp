@@ -5,7 +5,7 @@ import STATUS from './status.mjs';
 import WeatherDisplay from './weatherdisplay.mjs';
 import { registerDisplay } from './navigation.mjs';
 
-const STATION_ID_IMAGE = 'images/station-id/station-id.png';
+const STATION_ID_IMAGE = 'images/station%20id/station-id.png?v=20260816-2';
 
 class StationId extends WeatherDisplay {
 	constructor(navId, elemId) {
