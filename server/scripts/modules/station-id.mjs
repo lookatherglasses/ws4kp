@@ -12,6 +12,7 @@ class StationId extends WeatherDisplay {
 		super(navId, elemId, 'Station ID', true);
 
 		this.timing.totalScreens = 1;
+		this.timing.baseDelay = 12000;
 		preloadImg(STATION_ID_IMAGE);
 	}
 
