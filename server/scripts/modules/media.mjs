@@ -1,9 +1,18 @@
 import { text } from './utils/fetch.mjs';
 import Setting from './utils/setting.mjs';
 import { registerHiddenSetting } from './share.mjs';
+import { DateTime } from '../vendor/auto/luxon.mjs';
+import { timeZone } from './navigation.mjs';
+import {
+	cleanTrackTitle,
+	createPlaylistSelector,
+	periodForHour,
+} from './utils/media-playlist.mjs';
 
 let playlist;
-let currentTrack = 0;
+let playlistSelector;
+let currentTrackFile;
+let pendingTrackChange = false;
 let player;
 let sliderTimeout = null;
 let volumeSlider = null;
@@ -90,8 +99,7 @@ const getMedia = async () => {
 const enableMediaPlayer = () => {
 	// see if files are available
 	if (playlist?.availableFiles?.length > 0) {
-		// randomize the list
-		randomizePlaylist();
+		playlistSelector = createPlaylistSelector(playlist.availableFiles);
 		// enable the icon
 		const icon = document.getElementById('ToggleMediaContainer');
 		icon.classList.add('available');
@@ -169,7 +177,7 @@ const startMedia = async () => {
 	} else {
 		try {
 			await player.play();
-			setTrackName(playlist.availableFiles[currentTrack]);
+			setTrackName(currentTrackFile);
 		} catch (e) {
 			// report the error
 			console.error('Couldn\'t play music');
@@ -200,20 +208,6 @@ const stateChanged = () => {
 	} else {
 		stopMedia();
 	}
-};
-
-const randomizePlaylist = () => {
-	let availableFiles = [...playlist.availableFiles];
-	const randomPlaylist = [];
-	while (availableFiles.length > 0) {
-		// get a randon item from the available files
-		const i = Math.floor(Math.random() * availableFiles.length);
-		// add it to the final list
-		randomPlaylist.push(availableFiles[i]);
-		// remove the file from the available files
-		availableFiles = availableFiles.filter((file, index) => index !== i);
-	}
-	playlist.availableFiles = randomPlaylist;
 };
 
 const setVolume = (newVolume) => {
@@ -259,16 +253,13 @@ const initializePlayer = () => {
 	// create the player
 	player = new Audio();
 
-	// reset the playlist index
-	currentTrack = 0;
-
 	// add event handlers
 	player.addEventListener('canplay', playerCanPlay);
 	player.addEventListener('ended', playerEnded);
+	player.addEventListener('playing', playerPlaying);
 
 	// get the first file
-	player.src = `music/${playlist.availableFiles[currentTrack]}`;
-	setTrackName(playlist.availableFiles[currentTrack]);
+	selectNextTrack();
 	player.type = 'audio/mpeg';
 	// set volume and slider indicator
 	setVolume(mediaVolume.value);
@@ -283,24 +274,41 @@ const playerCanPlay = async () => {
 };
 
 const playerEnded = () => {
-	// next track
-	currentTrack += 1;
-	// roll over and re-randomize the tracks
-	if (currentTrack >= playlist.availableFiles.length) {
-		randomizePlaylist();
-		currentTrack = 0;
-	}
-	// update the player source
-	player.src = `music/${playlist.availableFiles[currentTrack]}`;
-	setTrackName(playlist.availableFiles[currentTrack]);
+	// Re-evaluate day/night only after the current song finishes.
+	selectNextTrack();
 };
 
 const setTrackName = (fileName) => {
-	const baseName = fileName.split('/').pop();
-	const trackName = decodeURIComponent(
-		baseName.replace(/\.mp3/gi, '').replace(/(_-)/gi, ''),
-	);
-	document.getElementById('musicTrack').innerHTML = trackName;
+	document.getElementById('musicTrack').textContent = cleanTrackTitle(fileName);
+};
+
+const currentPlaylistPeriod = () => {
+	const configuredZone = timeZone() || 'America/New_York';
+	let zonedTime = DateTime.local().setZone(configuredZone);
+	if (!zonedTime.isValid) zonedTime = DateTime.local().setZone('America/New_York');
+	return periodForHour(zonedTime.hour);
+};
+
+const selectNextTrack = () => {
+	currentTrackFile = playlistSelector.next(currentPlaylistPeriod());
+	if (!currentTrackFile) return;
+
+	pendingTrackChange = true;
+	player.src = `music/${currentTrackFile}`;
+	setTrackName(currentTrackFile);
+};
+
+const playerPlaying = () => {
+	if (!pendingTrackChange || !currentTrackFile) return;
+	pendingTrackChange = false;
+
+	document.dispatchEvent(new CustomEvent('ws4kp:trackchange', {
+		detail: {
+			fileName: currentTrackFile,
+			period: currentPlaylistPeriod(),
+			title: cleanTrackTitle(currentTrackFile),
+		},
+	}));
 };
 
 export {

@@ -66,6 +66,7 @@ const webpackOptions = {
 				'./server/scripts/modules/custom-scroll-text.mjs',
 				'./server/scripts/modules/currentweatherscroll.mjs',
 				'./server/scripts/modules/media.mjs',
+				'./server/scripts/modules/now-playing.mjs',
 			],
 			dependOn: 'shared',
 		},
@@ -127,6 +128,7 @@ const mjsSources = [
 	'server/scripts/modules/station-id.mjs',
 	'server/scripts/modules/progress.mjs',
 	'server/scripts/modules/media.mjs',
+	'server/scripts/modules/now-playing.mjs',
 	'server/scripts/modules/custom-scroll-text.mjs',
 	'server/scripts/index.mjs',
 ];
